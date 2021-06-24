@@ -96,10 +96,12 @@ class Req_request():
             "kind": "request",
             "requestId": requestId
         }
-        response = self.s.post(HandleUrl().conn_url('/api/v2/server/req/request/delete'),data=json.dumps(data))
+        response = self.s.request('post',HandleUrl().conn_url('/api/v2/server/req/request/delete'),data=json.dumps(data))
         print('删除的项目requestId是'+requestId)
         print(response.text)
         print('删除成功====>')
+
+
 
 if __name__ == '__main__':  #ctrl+j
     s = requests.session()
