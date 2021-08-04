@@ -1,6 +1,6 @@
 import requests
 
-from common.Readyaml import get_yaml_data
+from common.Readyaml import YamlUtil
 from testApi.login import Login
 
 #获取用例数据
@@ -23,10 +23,10 @@ import allure
 @allure.feature('登录模块')
 class TestLogin():
     @allure.story('登录案例')
-    @pytest.mark.parametrize('detail,inBody,expData',get_yaml_data('../data/login.yaml'))#数据驱动方法
-    def test_login(self,detail,inBody,expData):
+    @pytest.mark.parametrize('url,method,detail,inBody,expData',YamlUtil().get_yaml_data('../data/logincsv.yaml'))#数据驱动方法
+    def test_login(self,url,method,detail,inBody,expData):
         allure.dynamic.title(detail)
-        res = Login(requests).login(inBody,False)
+        res = Login(requests).login(url,method,inBody,False)
         assert res["code"] == expData['code']
 
 

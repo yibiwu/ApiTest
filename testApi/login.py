@@ -1,29 +1,31 @@
+import json
+
 import requests
 import pprint
-from common.ApiConfig import HandleUrl
+from common.ApiConfig import Base
 
 
 class Login:
-    def __init__(self, s):
-        self.s = s
-    def login(self,inData,mode=True):
-        url=HandleUrl().conn_url('/api/v2/server/uc/ucenter/login2')
+    def __init__(self,ss):
+        self.s = Base(ss)
+
+    def login(self,url,method,inData,mode=True):
         token = ""
         headers = {
             "Content-Type": "application/json",
             "token": token
         }
-        resp=self.s.post(url,headers=headers,json=inData)
+        resp=self.s.send_request(method=method,url=url,headers=headers,data=inData)
         if mode:#获取token
-            headers["token"] = resp.json()["data"]["token"]
-            self.s.headers.update(headers)
+            headers["token"] = resp["data"]["token"]
+            self.s.update_request(headers)
             # return resp.json()["data"]["token"]
 
         else:#返回响应数据
-            return resp.json()
+            return resp
 
 
 
 # if __name__ == '__main__':
-#     resp=Login().login({'account': 'danwei1', 'password': 'aa123456', 'verifyCode': '', 'client': 'www'})
-#     pprint.pprint(resp)
+#     ss=requests.session()
+#     resp=Login(ss).login(url='/api/v2/server/uc/ucenter/login2',method='post',inData={'account': 'danwei1', 'password': 'aa123456', 'verifyCode': '', 'client': 'www'},mode=True)

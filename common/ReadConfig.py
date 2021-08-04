@@ -6,7 +6,7 @@ class ReadConfig:
         if filepath:
             configpath = filepath
         else:
-            root_dir = os.path.realpath('E:\PyCharm 2020.1.1\ApiTest\common')
+            root_dir = os.path.realpath('E:\python\project\ApiTest\common')
             configpath = os.path.join(root_dir, "config.ini")
 
         self.cf = configparser.ConfigParser()
@@ -22,6 +22,6 @@ class ReadConfig:
 
 if __name__ == '__main__':
     test = ReadConfig()
-    t = test.get_url("url")
+    t = test.get_url("gdurl")
     t1=test.get_db("host")
     print(t,t1)

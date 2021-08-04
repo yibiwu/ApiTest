@@ -1,5 +1,5 @@
 import allure
-import pytest,os
+from common.Readyaml import YamlUtil
 
 from testApi.req_request import Req_request
 
@@ -9,16 +9,18 @@ class TestRequest():
     def test_001(self,login_fixture):
         with allure.step("step1：登录"):
             res1 = Req_request(login_fixture)
-        with allure.step("step2：获取申报书ID"):
-            cc = res1.sys_util_getId()
-        with allure.step("step3：添加申报书"):
-            res1.req_request_add(cc)
-        with allure.step("step4：保存申报书"):
-            res1.req_request_formData_save(cc)
-        with allure.step("step5：添加提交申报书"):
-            res1.req_request_submit(cc)
-
-
-    # if __name__ == '__main__':
-    #     pytest.main(['test_req.py','-s','--alluredir','../report/tmp'])# -s 打印输出
-    #     os.system('allure serve  ../report/tmp')
+        for i in range(1,3):
+            with allure.step("step2：获取申报书ID"):
+                cc = res1.sys_util_getId()
+                print(cc)
+                requestId = YamlUtil().read_yaml('requestId')
+            with allure.step("step3：添加申报书"):
+                res1.req_request_add(requestId,i)
+            with allure.step("step4：保存申报书"):
+                res1.req_request_formData_save(requestId)
+            with allure.step("step5：添加提交申报书"):
+                res1.req_request_submit(requestId)
+            with allure.step("step6：撤回申报书"):
+                res1.req_request_retract(requestId)
+            with allure.step("step7：删除申报书"):
+                res1.req_request_delete(requestId)
