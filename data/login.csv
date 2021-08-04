@@ -1,0 +1,3 @@
+﻿url,method,detail,data
+/api/v2/server/uc/ucenter/login2,POST,账号密码正确,"{'account': 'danwei1', 'password': 'aa123456', 'verifyCode': '', 'client': 'www'}"
+/api/v2/server/uc/ucenter/login3,POST,账号密码正确,"{'account': 'danwei1', 'password': 'aa123456', 'verifyCode': '', 'client': 'www'}"

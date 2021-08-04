@@ -1,0 +1,15 @@
+-
+  parameters:
+    testcase: data/login.csv
+  url: $csv{url}
+  method: $csv{mothod}
+- #test_01用例
+  detail: $csv{detail}
+  data:
+    account: "danwei1"
+    password: "aa123456"
+    verifyCode: ""
+    client: "www"
+  resp:
+    code: 0
+    message: "登录成功"
