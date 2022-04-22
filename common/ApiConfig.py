@@ -6,7 +6,7 @@ from common.ReadConfig import ReadConfig
 import hashlib
 import rsa
 from Crypto.Signature import PKCS1_v1_5
-from Crypto.Hash import SHA
+from Crypto.Hash import SHA, SHA256
 from Crypto.PublicKey import RSA
 
 
@@ -22,10 +22,13 @@ class Base:
 
     def send_request(self,method,url,data,**kwargs):
         method=str(method).lower()
-        self.url=self.conn_url(url)
+        if url.startswith('http'):
+            self.url=url
+        else:
+            self.url=self.conn_url(url)
         # resp=None
         if method=='get':
-            resp=self.s.request(method, self.url,data=data,**kwargs)
+            resp=self.s.request(method, self.url,params=data,**kwargs)
         else:
             data=json.dumps(data)
             resp = self.s.request(method, self.url, data=data, **kwargs)
@@ -73,13 +76,12 @@ class Base:
         return lase_text
 
     def signature(self, message):#签名
-        with open('private.pem') as f:
-             s = f.read()
-        prikey = rsa.PrivateKey.load_pkcs1(s)
-        rsakey = RSA.importKey(prikey)
+        with open('private.pem','rb') as f:
+            s = f.read()
+        rsakey = RSA.import_key(s)
         signer = PKCS1_v1_5.new(rsakey)
-        digest = SHA.new()
-        digest.update(message.encode())
+        digest = SHA256.new()
+        digest.update(message)
         sign = signer.sign(digest)
         signature = base64.b64encode(sign)
         print(signature)
@@ -87,22 +89,24 @@ class Base:
 
 
     def verify_sign(self,signature,message):
-        with open('master-public.pem') as f:
+        with open('public.pem') as f:
             key = f.read()
         rsakey = RSA.importKey(key)
         verifier = PKCS1_v1_5.new(rsakey)
-        digest = SHA.new()
-        digest.update(message.encode())
+        digest = SHA256.new()
+        digest.update(message)
         is_verify = verifier.verify(digest, base64.b64decode(signature))
         print(is_verify)
 
 if __name__ == '__main__':
-    re=Base().get_md5("123456")
-    print(re)
-    Base().create_keys()
-    string='你好'
-    crypt_text = Base().encrypt(string.encode('utf-8'))# 使用公钥去加密字符串
-    # signature=Base().signature(crypt_text)
-    # Base().verify_sign(signature,crypt_text)
-    lase_text = Base().decrypt(crypt_text)
+    ss = requests.session()
+    # re=Base().get_md5("123456")
+    # print(re)
+    # Base(ss).create_keys()
+    string='123456'
+    crypt_text = Base(ss).encrypt(string.encode())# 使用公钥去加密字符串
+    signature=Base(ss).signature(crypt_text)
+    Base(ss).verify_sign(signature,crypt_text)
+    lase_text = Base(ss).decrypt(crypt_text)
+    Base(ss).signature(string.encode('utf-8'))
 

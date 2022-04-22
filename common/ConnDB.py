@@ -17,10 +17,10 @@ class HandleMysql:
         self.conn = pymysql.connect(host=host, user=username, password=password, db=db_name,charset=charset)
         self.cur = self.conn.cursor()
 
-    def execute_sql(self, sql, data):
+    def execute_sql(self, sql):
         """执行操作数据的相关sql"""
         self.conn_mysql()
-        self.cur.execute(sql, data)
+        self.cur.execute(sql)
         self.conn.commit()
 
     def search(self, sql):
@@ -37,6 +37,5 @@ class HandleMysql:
 
 if __name__ == '__main__':
     test = HandleMysql()
-    sql = "insert into user values('ccc','222')"
-    for i in test.execute_sql(sql):
-        print(i)
+    sql = "insert into user(username,password) values('ccc','222')"
+    test.execute_sql(sql)

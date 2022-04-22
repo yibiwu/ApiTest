@@ -23,7 +23,7 @@ import allure
 @allure.feature('登录模块')
 class TestLogin():
     @allure.story('登录案例')
-    @pytest.mark.parametrize('url,method,detail,inBody,expData',YamlUtil().get_yaml_data('../data/logincsv.yaml'))#数据驱动方法
+    @pytest.mark.parametrize('url,method,detail,inBody,expData',YamlUtil().get_yaml_data('../data/login.yaml'))#数据驱动方法
     def test_login(self,url,method,detail,inBody,expData):
         allure.dynamic.title(detail)
         res = Login(requests).login(url,method,inBody,False)

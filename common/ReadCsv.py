@@ -3,7 +3,7 @@ import csv
 
 url=[]
 
-#¶ÁÈ¡csvÎÄ¼ş
+
 with open("E:\python\project\ApiTest\data\login.csv", "r",encoding='utf-8-sig') as f:
     reader = csv.DictReader(f)
     for row in reader:

@@ -3,8 +3,8 @@ import json
 import requests
 
 from common.ApiConfig import Base
-
-
+from common.ConnDB import HandleMysql
+from common.ReadJson import JsonUtil
 from common.Readyaml import YamlUtil
 
 
@@ -30,17 +30,20 @@ class Req_request():
     def sys_util_getId(self):
         response=self.s.send_request(method='get', url='/api/v2/server/sys/util/getId',data='')
         # requestId = response.json()["data"]
+        requestId = response["data"]
         YamlUtil().write_yaml({'requestId':response["data"]})
+        sql = "insert into req_request(id) values('%s')"%(requestId)
+        HandleMysql().execute_sql(sql)
         # return requestId
 
 
-    def req_request_add(self,requestId,i):
+    def req_request_add(self,themeId,requestId,i):
         data={
                 "id":requestId,
                 "name":"自动化测试项目"+str(i),
                 "contactPerson":"1",
                 "contactPhone":"1",
-                "themeId":"726804852398620672",
+                "themeId":themeId,
                 "species":"",
                 "falseDeclaration":{
                 }
@@ -50,9 +53,21 @@ class Req_request():
         print(response)
         print('添加成功====>')
 
+    def formdata_info(self,themeId):
+        data={
+            "id":themeId,
+            "type":"requestFormData"
+        }
+        print(data)
+        response = self.s.send_request(method='get', url='/api/v2/server/th/theme/formData/info', data=data)
+        formdata=response["data"]
+        JsonUtil().write_json(formdata)
+        print(response)
+
     def req_request_formData_save(self, requestId):
-        with open("../testApi/formdata.json",'r',encoding='utf-8') as form:
-            formdata=json.dumps(json.load(form))
+        # with open("../testApi/formdata.json",'r',encoding='utf-8') as form:
+        #     formdata=json.dumps(json.load(form))
+        formdata=JsonUtil().read_json()
         print(requestId)
         data={
             "formData":formdata,
@@ -101,18 +116,21 @@ class Req_request():
 
 
 
+
+
 if __name__ == '__main__':  #ctrl+j
     ss=requests.session()
     aa = Req_request(ss)
     aa.api_post_login(url='/api/v2/server/uc/ucenter/login2',method='post',inData={'account': 'danwei1', 'password': 'aa123456', 'verifyCode': '', 'client': 'www'})
     aa.sys_util_getId()
     cc=YamlUtil().read_yaml('requestId')
-    aa.req_request_add(cc,1)
-    print(ss.headers)
-    aa.req_request_formData_save(cc)
-    aa.req_request_submit(cc)
-    aa.req_request_retract(cc)
-    aa.req_request_delete(cc)
+    aa.formdata_info("942730420770541568")
+    aa.req_request_add("942730420770541568",cc,1)
+    # print(ss.headers)
+    # aa.req_request_formData_save(cc)
+    # aa.req_request_submit(cc)
+    # aa.req_request_retract(cc)
+    # aa.req_request_delete(cc)
 
 
 

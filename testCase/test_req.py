@@ -11,8 +11,7 @@ class TestRequest():
             res1 = Req_request(login_fixture)
         for i in range(1,3):
             with allure.step("step2：获取申报书ID"):
-                cc = res1.sys_util_getId()
-                print(cc)
+                res1.sys_util_getId()
                 requestId = YamlUtil().read_yaml('requestId')
             with allure.step("step3：添加申报书"):
                 res1.req_request_add(requestId,i)
